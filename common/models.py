@@ -1,9 +1,9 @@
 from django.db import models
+from accounts.models import UserProfile
 from pets.models import Pet
 
 
-# Create your models here.
 class Comment(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE)
     comment = models.TextField(blank=False)
-
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)

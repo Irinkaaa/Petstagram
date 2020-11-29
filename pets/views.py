@@ -1,4 +1,7 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+
+from accounts.decorators import user_required
 from common.models import Comment
 from core.cleanup import clean_up_files
 from pets.forms.comment_form import CommentForm
@@ -6,7 +9,6 @@ from pets.forms.edit_form import EditForm
 from pets.models import Pet, Like
 
 
-# Create your views here.
 def pets_list(req):
     context = {
         'pets': Pet.objects.all(),
@@ -14,12 +16,18 @@ def pets_list(req):
     return render(req, 'pet_list.html', context)
 
 
+@login_required
 def pets_details_or_comment(req, pk):
     pet = Pet.objects.get(pk=pk)
     if req.method == 'GET':
         context = {
             'pet': pet,
-            'form': CommentForm
+            'form': CommentForm,
+            'can_delete': req.user == pet.user.user,
+            'can_edit': req.user == pet.user.user,
+            'can_like': req.user != pet.user.user,
+            'has_likes': pet.like_set.filter(user_id=req.user.userprofile.id).exists(),
+            'can_comment': req.user != pet.user.user,
         }
         return render(req, 'pet_detail.html', context)
     else:
@@ -27,9 +35,9 @@ def pets_details_or_comment(req, pk):
         if form.is_valid():
             comment = Comment(comment=form.cleaned_data['text'])
             comment.pet = pet
+            comment.user = req.user.userprofile
             comment.save()
             pet.comment_set.add(comment)
-            pet.save()
             return redirect('pet details or comment', pk)
         context = {
             'pet': pet,
@@ -38,14 +46,20 @@ def pets_details_or_comment(req, pk):
         return render(req, 'pet_detail.html', context)
 
 
+@login_required
 def pets_like(req, pk):
-    pet = Pet.objects.get(pk=pk)
-    like = Like(field=str(pk))
-    like.pet = pet
-    like.save()
-    return redirect('pet list')
+    like = Like.objects.filter(user_id=req.user.userprofile.id, pet_id=pk).first()
+    if like:
+        like.delete()
+    else:
+        pet = Pet.objects.get(pk=pk)
+        like = Like(field=str(pk), user=req.user.userprofile)
+        like.pet = pet
+        like.save()
+    return redirect('pet details or comment', pk)
 
 
+@user_required(Pet)
 def pets_edit(req, pk):
     pet = Pet.objects.get(pk=pk)
     if req.method == 'GET':
@@ -69,6 +83,7 @@ def pets_edit(req, pk):
         return render(req, 'pet_edit.html', context)
 
 
+@login_required
 def pets_delete(req, pk):
     pet = Pet.objects.get(pk=pk)
     if req.method == 'GET':
@@ -81,6 +96,7 @@ def pets_delete(req, pk):
         return redirect('pet list')
 
 
+@login_required
 def pets_create(req):
     pet = Pet()
     if req.method == 'GET':
