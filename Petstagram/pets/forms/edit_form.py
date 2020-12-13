@@ -1,5 +1,5 @@
 from django import forms
-from pets.models import Pet
+from Petstagram.pets.models import Pet
 
 
 class EditForm(forms.ModelForm):

@@ -1,9 +1,8 @@
 from django.contrib import admin
-from common.models import Comment
-from pets.models import Like, Pet
+from Petstagram.common.models import Comment
+from Petstagram.pets.models import Like, Pet
 
 
-# Register your models here.
 class LikeInline(admin.TabularInline):
     model = Like
 

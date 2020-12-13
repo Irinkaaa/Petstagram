@@ -1,12 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
-from accounts.decorators import user_required
-from common.models import Comment
-from core.cleanup import clean_up_files
-from pets.forms.comment_form import CommentForm
-from pets.forms.edit_form import EditForm
-from pets.models import Pet, Like
+from Petstagram.accounts.decorators import user_required
+from Petstagram.common.models import Comment
+from Petstagram.core.cleanup import clean_up_files
+from Petstagram.pets.forms.comment_form import CommentForm
+from Petstagram.pets.forms.edit_form import EditForm
+from Petstagram.pets.models import Pet, Like
 
 
 def pets_list(req):

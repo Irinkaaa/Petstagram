@@ -1,8 +1,8 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from accounts.forms import SignUpForm, UserProfileForm
-from accounts.models import UserProfile
+from Petstagram.accounts.forms import SignUpForm, UserProfileForm
+from Petstagram.accounts.models import UserProfile
 
 
 def user_profile(request, pk=None):

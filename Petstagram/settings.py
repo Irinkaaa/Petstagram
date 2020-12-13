@@ -20,9 +20,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'common',
-    'pets',
-    'accounts',
+    'Petstagram.common',
+    'Petstagram.pets',
+    'Petstagram.accounts',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

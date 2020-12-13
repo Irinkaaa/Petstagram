@@ -1,8 +1,5 @@
 from django.db import models
-
-
-# Create your models here.
-from accounts.models import UserProfile
+from Petstagram.accounts.models import UserProfile
 
 
 class Pet(models.Model):
